@@ -9,6 +9,7 @@ sys.path.append(project)
 
 # Add the path to 3rd party django application and to django itself.
 sys.path.append('/home/urense')
-os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.apache.override'
-import django.core.handlers.wsgi
-application = django.core.handlers.wsgi.WSGIHandler()
+os.environ['DJANGO_SETTINGS_MODULE'] = 'ebuspass.apache.override'
+
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
