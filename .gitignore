@@ -1,0 +1,5 @@
+# Compiled Source#
+*.pyc
+
+# Lock Files #
+*.swp
