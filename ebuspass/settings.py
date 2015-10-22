@@ -76,6 +76,12 @@ WSGI_APPLICATION = 'ebuspass.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
+   'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'eBusPass',
+        'USER': 'urense',
+        'PASSWORD': '@ense400#',
+    }    
 }
 
 
@@ -84,7 +90,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Regina'
 
 USE_I18N = True
 
