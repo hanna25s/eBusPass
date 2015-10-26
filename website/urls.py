@@ -9,4 +9,8 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^purchase_history/', views.purchase_history),
     url(r'^account_info/', views.account_info),
+    url(r'^purchase_pass/', views.purchase_pass),
+    url(r'^confirmation/', views.confirmation),
+    url(r'^signout/', views.signout),
+
 ]

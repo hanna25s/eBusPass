@@ -12,4 +12,10 @@ def purchase_history(request):
 
 def account_info(request):
 	return render(request, 'website/account_info.html');
-	
+
+def purchase_pass(request):
+        return render(request, 'website/purchase_pass.html');	
+def signout(request):
+        return render(request, 'website/signout.html');
+def confirmation(request):
+        return render(request, 'website/confirmation.html');
