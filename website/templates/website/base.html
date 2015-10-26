@@ -15,6 +15,14 @@
 		<link rel="stylesheet" href="{% static "website/css/main.css" %}" />
 		<!--[if lte IE 8]><link rel="stylesheet" href="{% static "website/css/ie8.css" %}" /><![endif]-->
 		<!--[if lte IE 9]><link rel="stylesheet" href="{% static "website/css/ie9.css" %}" /><![endif]-->
+<script>
+$(function(){
+    var $select = $(".1-12");
+    for (i=1;i<=12;i++){
+        $select.append($('<option></option>').val(i).html(i))
+    }
+});
+</script>
 	</head>
 
     <div id="header-wrapper">
