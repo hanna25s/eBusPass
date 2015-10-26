@@ -1,66 +1,8 @@
-<!DOCTYPE HTML>
-<!--
-	ZeroFour by HTML5 UP
-	html5up.net | @n33co
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title>eBusPass</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
-		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script>
-$(function(){
-    var $select = $(".1-12");
-    for (i=1;i<=12;i++){
-        $select.append($('<option></option>').val(i).html(i))
-    }
-});
-</script>
-	</head>
-	<body class="homepage">
-		<div id="page-wrapper">
+{% extends "website/base.html" %}
 
-			<!-- Header -->
-				<div id="header-wrapper">
-					<div class="container">
 
-						<!-- Header -->
-							<header id="header">
-								<div class="inner">
 
-									<!-- Logo -->
-										<h1><a href="index.html" id="logo">eBusPassLogo</a></h1>
-
-									<!-- Nav -->
-										<nav id="nav">
-											<ul>
-												<li class="current_page_item"><a href="index.html">Home</a></li>
-												
-												
-												<li><a href="right-sidebar.html">pass info</a></li>
-												<li><a href="singout.html">sign out</a></li>
-											</ul>
-										</nav>
-
-								</div>
-							</header>
-
-						<!-- Banner -->
-							<div id="banner">
-								<h2><strong>eBusPass:</strong> This Content will be replaced by the header 
-								
-							</div>
-
-					</div>
-				</div>
-
-			<!-- Main Wrapper -->
+{% block content %}
 			<!-- Main Wrapper -->
 				<div id="main-wrapper">
 					<div class="wrapper style2">
@@ -127,34 +69,4 @@ $(function(){
 							</div>
 						</div>
 					</div>
-<!-- Footer Wrapper -->
-				<div id="footer-wrapper">
-					<footer id="footer" class="container">
-						
-								<div id="copyright">
-									<ul class="menu">
-										<li>&copy; ebuspass. All rights reserved</li><li><strong>ZeroFour</strong> template. Designed by <a href="http://n33.co/">AJ</a> Design :<a href="http://html5up.net">HTML5 UP</a></li>
-									</ul>
-								</div>
-							
-						
-					</footer>
-				</div>
-
-		</div>
-						
-
-			
-
-		<!-- Scripts -->
-
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.dropotron.min.js"></script>
-			<script src="assets/js/skel.min.js"></script>
-			<script src="assets/js/skel-viewport.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
-			<script src="assets/js/main.js"></script>
-
-	</body>
-</html>
+{% endblock %}
