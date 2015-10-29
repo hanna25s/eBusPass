@@ -6,16 +6,22 @@ class Activation(models.Model):
     userid = models.ForeignKey('User', db_column='userId', unique=True)  # Field name made lowercase.
     expirydate = models.DateTimeField(db_column='expiryDate')  # Field name made lowercase.
 
+    def __str__(self):
+        return str(self.userid)
+
     class Meta:
         managed = False
         db_table = 'Activation'
 
 
 class Buspass(models.Model):
-    buspassid = models.IntegerField(db_column='busPassId', primary_key=True)  # Field name made lowercase.
+    buspassid = models.AutoField(db_column='busPassId', primary_key=True)  # Field name made lowercase.
     userid = models.ForeignKey('User', db_column='userId', blank=True, null=True)  # Field name made lowercase.
     monthlypass = models.DateTimeField(db_column='monthlyPass', blank=True, null=True)  # Field name made lowercase.
     rides = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return str(elf.buspassid)
 
     class Meta:
         managed = False
@@ -32,6 +38,9 @@ class Transactions(models.Model):
     paymenttype = models.CharField(db_column='paymentType', max_length=45)  # Field name made lowercase.
     userid = models.ForeignKey('User', db_column='userId')  # Field name made lowercase.
 
+    def __str__(self):
+        return str(self.transactionid)
+
     class Meta:
         managed = False
         db_table = 'Transactions'
@@ -45,6 +54,9 @@ class User(models.Model):
     email = models.CharField(unique=True, max_length=45)
     registrationdate = models.DateTimeField(db_column='registrationDate')  # Field name made lowercase.
     status = models.TextField()  # This field type is a guess.
+
+    def __str__(self):
+        return str(self.userid) + " - " + self.username
 
     class Meta:
         managed = False
