@@ -19,3 +19,6 @@ def signout(request):
         return render(request, 'website/signout.html');
 def confirmation(request):
         return render(request, 'website/confirmation.html');
+
+def registration(request):
+        return render(request, 'website/registration.html');
