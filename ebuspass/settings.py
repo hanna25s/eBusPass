@@ -56,7 +56,7 @@ ROOT_URLCONF = 'ebuspass.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,7 +81,9 @@ DATABASES = {
         'NAME': 'eBusPass',
         'USER': 'urense',
         'PASSWORD': '@ense400#',
-    }    
+        'HOST':'54.84.253.83',
+        'PORT':'3306',
+    }
 }
 
 
