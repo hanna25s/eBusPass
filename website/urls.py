@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^confirmation/', views.confirmation),
     url(r'^signout/', views.signout),
     url(r'^registration/', views.registration),
+    url(r'^sign-in/', views.sign-in),
 
 ]
