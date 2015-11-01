@@ -23,6 +23,6 @@ def confirmation(request):
 def registration(request):
         return render(request, 'website/registration.html');
 
-def registration(request):
-        return render(request, 'website/sign_in.html');
+def signin(request):
+        return render(request, 'website/signin.html');
         
