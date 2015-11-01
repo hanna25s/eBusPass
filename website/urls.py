@@ -15,5 +15,6 @@ urlpatterns = [
     url(r'^registration/', views.registration),
     url(r'^signin/', views.signin),
     url(r'^user_profile/', views.user_profile),
+    url(r'^landing_page/', views.landing_page),
 
 ]
