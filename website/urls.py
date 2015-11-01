@@ -14,5 +14,6 @@ urlpatterns = [
     url(r'^signout/', views.signout),
     url(r'^registration/', views.registration),
     url(r'^signin/', views.signin),
+    url(r'^user_profile/', views.user_profile),
 
 ]
