@@ -1,0 +1,38 @@
+{% extends "website/base.html" %}
+
+{% block content %}
+
+<div class="wrapper style1">
+  <div class=".box.feature2">
+    <div class="container">
+      <div class="row">
+        <div class="3u">
+        </div>
+        <div class="6u">
+          <header class="major">
+            <h2>registration</h2>
+          </header>
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label for="newUsername">Username or Email</label>
+              <input type="text" class="form-control" id="newUsername">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" placeholder="Password">
+            </div>
+
+            <br/><br/>
+            <div class="form-group">
+              <button type="submit" class="btn btn-default">Sign in</button>
+              <input type="checkbox" name="remenber" value="remenber"> remember me <br>
+              <a href="url">Forgot password?</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
