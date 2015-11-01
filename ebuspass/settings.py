@@ -38,6 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'website',
+    'registration',
+    'crispy_forms',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -76,12 +78,16 @@ WSGI_APPLICATION = 'ebuspass.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-   'default': {
-        'ENGINE': 'django.db.backends.mysql',
+    #'default': {
+    #    'ENGINE': 'django.db.backends.sqlite3',
+    #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #}
+   default': {
+      'ENGINE': 'django.db.backends.mysql',
         'NAME': 'eBusPass',
         'USER': 'urense',
         'PASSWORD': '@ense400#',
-    }    
+    }
 }
 
 
@@ -107,4 +113,9 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
+#Django registration proesse edited by Kulbir
+ACCOUNT_ACTIVATION_DAYS = 7
+REGISTRATION_AUTO_LOGIN = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+#Kulbir edit ends
