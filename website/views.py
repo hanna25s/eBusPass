@@ -5,7 +5,7 @@ from django.http import HttpResponse
 # Create your views here.
 
 def index(request):
-	return render(request, 'website/account_info.html');
+	return render(request, 'website/landing_page.html');
 
 def purchase_history(request):
 	return render(request, 'website/purchase_history.html');
