@@ -26,3 +26,7 @@ def registration(request):
 def signin(request):
         return render(request, 'website/signin.html');
         
+def user_profile(request):
+        return render(request, 'website/user_profile.html');
+        
+        
