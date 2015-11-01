@@ -28,5 +28,7 @@ def signin(request):
         
 def user_profile(request):
         return render(request, 'website/user_profile.html');
-        
+
+def landing_page(request):
+	return render(request, 'website/landing_page.html');
         
