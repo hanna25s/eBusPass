@@ -24,4 +24,5 @@ def registration(request):
         return render(request, 'website/registration.html');
 
 def registration(request):
-        return render(request, 'website/sign-in.html');
+        return render(request, 'website/sign_in.html');
+        
