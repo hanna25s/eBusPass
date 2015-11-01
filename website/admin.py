@@ -3,7 +3,13 @@ from .models import Activation, Buspass, Transactions, User
 # Register your models here.
 
 class UserAdmin(admin.ModelAdmin):
+
     list_display = ('userid', 'username')
+    fieldsets = [
+        ('Account Information',{'fields': ['username','name', 'email','registrationdate','status']}),
+    ]
+
+    search_fields = ['username']
 
 class ActivationAdmin(admin.ModelAdmin):
     list_display = ('userid', 'expirydate')
