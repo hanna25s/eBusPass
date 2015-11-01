@@ -9,5 +9,16 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^purchase_history/', views.purchase_history),
     url(r'^account_info/', views.account_info),
+
         #urls(r'^accounts/', include('registration.backends.default.urls')),
+
+    url(r'^purchase_pass/', views.purchase_pass),
+    url(r'^confirmation/', views.confirmation),
+    url(r'^signout/', views.signout),
+    url(r'^registration/', views.registration),
+    url(r'^signin/', views.signin),
+    url(r'^user_profile/', views.user_profile),
+    url(r'^landing_page/', views.landing_page),
+
+
 ]

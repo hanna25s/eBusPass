@@ -5,11 +5,30 @@ from django.http import HttpResponse
 # Create your views here.
 
 def index(request):
-	return render(request, 'website/account_info.html');
+	return render(request, 'website/landing_page.html');
 
 def purchase_history(request):
 	return render(request, 'website/purchase_history.html');
 
 def account_info(request):
 	return render(request, 'website/account_info.html');
-	
+
+def purchase_pass(request):
+        return render(request, 'website/purchase_pass.html');	
+def signout(request):
+        return render(request, 'website/signout.html');
+def confirmation(request):
+        return render(request, 'website/confirmation.html');
+
+def registration(request):
+        return render(request, 'website/registration.html');
+
+def signin(request):
+        return render(request, 'website/signin.html');
+        
+def user_profile(request):
+        return render(request, 'website/user_profile.html');
+
+def landing_page(request):
+	return render(request, 'website/landing_page.html');
+        

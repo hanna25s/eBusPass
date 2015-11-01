@@ -2,9 +2,12 @@ from django.db import models
 
 # Create your models here.
 class Activation(models.Model):
-    key = models.CharField(unique=True, max_length=100)
+    key = models.CharField(unique=True, max_length=100, verbose_name="Activation Key")
     userid = models.ForeignKey('User', db_column='userId', unique=True)  # Field name made lowercase.
-    expirydate = models.DateTimeField(db_column='expiryDate')  # Field name made lowercase.
+    expirydate = models.DateTimeField(db_column='expiryDate', verbose_name="Expiry Date")  # Field name made lowercase.
+
+    def __str__(self):
+        return str(self.userid)
 
     class Meta:
         managed = False
@@ -12,14 +15,18 @@ class Activation(models.Model):
 
 
 class Buspass(models.Model):
-    buspassid = models.IntegerField(db_column='busPassId', primary_key=True)  # Field name made lowercase.
+    buspassid = models.AutoField(db_column='busPassId', primary_key=True)  # Field name made lowercase.
     userid = models.ForeignKey('User', db_column='userId', blank=True, null=True)  # Field name made lowercase.
-    monthlypass = models.DateTimeField(db_column='monthlyPass', blank=True, null=True)  # Field name made lowercase.
-    rides = models.IntegerField(blank=True, null=True)
+    monthlypass = models.DateTimeField(db_column='monthlyPass', blank=True, null=True, verbose_name="Monthly Expiration Date")  # Field name made lowercase.
+    rides = models.IntegerField(blank=True, null=True, verbose_name="Rides Remaining")
+
+    def __str__(self):
+        return str(elf.buspassid)
 
     class Meta:
         managed = False
         db_table = 'BusPass'
+        verbose_name_plural = "Bus Passes"
 
 
 class Transactions(models.Model):
@@ -29,12 +36,16 @@ class Transactions(models.Model):
     pst = models.FloatField()
     cost = models.FloatField()
     total = models.FloatField()
-    paymenttype = models.CharField(db_column='paymentType', max_length=45)  # Field name made lowercase.
+    paymenttype = models.CharField(db_column='paymentType', max_length=45, verbose_name="Payment Type")  # Field name made lowercase.
     userid = models.ForeignKey('User', db_column='userId')  # Field name made lowercase.
+
+    def __str__(self):
+        return str(self.transactionid)
 
     class Meta:
         managed = False
         db_table = 'Transactions'
+        verbose_name_plural = 'Transactions'
 
 
 class User(models.Model):
@@ -43,8 +54,11 @@ class User(models.Model):
     username = models.CharField(unique=True, max_length=45)
     password = models.CharField(max_length=45)
     email = models.CharField(unique=True, max_length=45)
-    registrationdate = models.DateTimeField(db_column='registrationDate')  # Field name made lowercase.
-    status = models.TextField()  # This field type is a guess.
+    registrationdate = models.DateTimeField(db_column='registrationDate', verbose_name='Registration Date')  # Field name made lowercase.
+    status = models.BooleanField(verbose_name="Active")  # This field type is a guess.
+
+    def __str__(self):
+        return str(self.userid) + " - " + self.username
 
     class Meta:
         managed = False

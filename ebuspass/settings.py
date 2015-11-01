@@ -58,7 +58,7 @@ ROOT_URLCONF = 'ebuspass.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,16 +78,14 @@ WSGI_APPLICATION = 'ebuspass.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    #'default': {
-    #    'ENGINE': 'django.db.backends.sqlite3',
-    #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    #}
-   default': {
-      'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'eBusPass',
+   'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': 'eBusPass',
         'USER': 'urense',
-        'PASSWORD': '@ense400#',
-    }
+       'PASSWORD': '@ense400#',
+       'HOST':'54.84.253.83',
+       'PORT':'3306',
+  }
 }
 
 
