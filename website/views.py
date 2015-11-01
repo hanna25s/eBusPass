@@ -22,3 +22,6 @@ def confirmation(request):
 
 def registration(request):
         return render(request, 'website/registration.html');
+
+def registration(request):
+        return render(request, 'website/sign-in.html');
