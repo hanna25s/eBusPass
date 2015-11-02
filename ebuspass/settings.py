@@ -112,7 +112,7 @@ STATICFILES_DIRS = (
 )
 
 #Django registration proesse edited by Kulbir
-ACCOUNT_ACTIVATION_DAYS = 7
+#ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
