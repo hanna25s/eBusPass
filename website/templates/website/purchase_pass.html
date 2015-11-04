@@ -53,15 +53,17 @@
 										<div id="content">
 
 											<!-- Content -->
+											<h2>WELCOME TO YOUR PAYMENT PORTAL</h2>
 
-											<h2>WELCOME TO YOUr PAYMENT PORTAL</h2>
-												
 											</header>
-											<h1>Select Number of Months :<select class="1-12"></select> </h1>
-											<h1>Payment method : You will to redirected to secure merchant's site</h1>
-											<h2> <img alt="PayPal" border="0" src="https://www.paypalobjects.com/webstatic/en_US/btn/btn_buynow_pp_142x27.png" />  
+											<form action="/paypal/process/" method="post">
+												{{ form }}
+												<br/><br/>
+												<input type="submit" value="Submit" />
+											</form>
+											<h2> <img alt="PayPal" border="0" src="https://www.paypalobjects.com/webstatic/en_US/btn/btn_buynow_pp_142x27.png" />
 											<img alt="Visa Checkout" border="0" class="v-button" role="button"src="https://sandbox.secure.checkout.visa.com/wallet-services-web/xo/button.png?cardBrands=VISA,MASTERCARD,DISCOVER,AMEX"/><h2>
-											
+
 
 										</div>
 									</div>
