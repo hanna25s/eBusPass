@@ -33,19 +33,22 @@ $(function(){
 								<div class="inner">
 
 									<!-- Logo -->
-										<h1><a href="/landing_page/" id="logo">eBusPass</a></h1>
+										<h1><a href="/" id="logo">eBusPass</a></h1>
 
 									<!-- Nav -->
                   {% block nav %}
 										<nav id="nav">
 											<ul>
-												<li><a href="/landing_page/">Home</a></li>
-												<li><a href="/signin/">Sign in</a></li>
-												<li><a href="/user_profile/">My profile</a></li>
+                        <li><a href="/">Home</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="/user_profile/">My profile</a></li>
                         <li><a href="/account_info/">Account Info</a></li>
                         <li><a href="/purchase_pass/">Purchase Pass</a></li>
-												<li><a href="/purchase_history/">Purchase History</a></li>
-                        <li><a href="/signout" class="alt icon fa-sign-out"></a></li>
+                        <li><a href="/purchase_history/">Purchase History</a></li>
+                        <li><a href="/accounts/logout/" class="alt icon fa-sign-out">Log Out</a></li>
+                        {% else %}
+                        <li><a href="/accounts/login/">Sign in</a></li>
+                        {% endif %}
 											</ul>
 										</nav>
                    {% endblock %}
