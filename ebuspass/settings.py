@@ -116,4 +116,5 @@ STATICFILES_DIRS = (
 REGISTRATION_AUTO_LOGIN = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+LOGIN_REDIRECT_URL ='/user_profile'
 #Kulbir edit ends
