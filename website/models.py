@@ -1,33 +1,30 @@
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
+#
+# Also note: You'll have to insert the output of 'django-admin sqlcustom [app_label]'
+# into your database.
+from __future__ import unicode_literals
+
 from django.db import models
-
-# Create your models here.
-class Activation(models.Model):
-    key = models.CharField(unique=True, max_length=100, verbose_name="Activation Key")
-    userid = models.ForeignKey('User', db_column='userId', unique=True)  # Field name made lowercase.
-    expirydate = models.DateTimeField(db_column='expiryDate', verbose_name="Expiry Date")  # Field name made lowercase.
-
-    def __str__(self):
-        return str(self.userid)
-
-    class Meta:
-        managed = False
-        db_table = 'Activation'
 
 
 class Buspass(models.Model):
     buspassid = models.AutoField(db_column='busPassId', primary_key=True)  # Field name made lowercase.
-    userid = models.ForeignKey('User', db_column='userId', blank=True, null=True)  # Field name made lowercase.
-    monthlypass = models.DateTimeField(db_column='monthlyPass', blank=True, null=True, verbose_name="Monthly Expiration Date")  # Field name made lowercase.
-    rides = models.IntegerField(blank=True, null=True, verbose_name="Rides Remaining")
+    userid = models.ForeignKey('AuthUser', db_column='userId', blank=True, null=True)  # Field name made lowercase.
+    monthlypass = models.DateTimeField(db_column='monthlyPass', blank=True, null=True)  # Field name made lowercase.
+    rides = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return str(elf.buspassid)
+        return str(self.buspassid)
 
     class Meta:
         managed = False
         db_table = 'BusPass'
         verbose_name_plural = "Bus Passes"
-
 
 class Transactions(models.Model):
     transactionid = models.AutoField(db_column='transactionId', primary_key=True)  # Field name made lowercase.
@@ -36,8 +33,8 @@ class Transactions(models.Model):
     pst = models.FloatField()
     cost = models.FloatField()
     total = models.FloatField()
-    paymenttype = models.CharField(db_column='paymentType', max_length=45, verbose_name="Payment Type")  # Field name made lowercase.
-    userid = models.ForeignKey('User', db_column='userId')  # Field name made lowercase.
+    paymenttype = models.CharField(db_column='paymentType', max_length=45)  # Field name made lowercase.
+    userid = models.ForeignKey('AuthUser', db_column='userId')  # Field name made lowercase.
 
     def __str__(self):
         return str(self.transactionid)
@@ -47,19 +44,18 @@ class Transactions(models.Model):
         db_table = 'Transactions'
         verbose_name_plural = 'Transactions'
 
-
-class User(models.Model):
-    userid = models.AutoField(db_column='userId', primary_key=True)  # Field name made lowercase.
-    name = models.CharField(max_length=45)
-    username = models.CharField(unique=True, max_length=45)
-    password = models.CharField(max_length=45)
-    email = models.CharField(unique=True, max_length=45)
-    registrationdate = models.DateTimeField(db_column='registrationDate', verbose_name='Registration Date')  # Field name made lowercase.
-    status = models.BooleanField(verbose_name="Active")  # This field type is a guess.
-
-    def __str__(self):
-        return str(self.userid) + " - " + self.username
+class AuthUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.IntegerField()
+    username = models.CharField(unique=True, max_length=30)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    email = models.CharField(max_length=254)
+    is_staff = models.IntegerField()
+    is_active = models.IntegerField()
+    date_joined = models.DateTimeField()
 
     class Meta:
         managed = False
-        db_table = 'User'
+        db_table = 'auth_user'
