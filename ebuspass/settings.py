@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'website',
     'registration',
     'crispy_forms',
+        'paypal.standard.ipn',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -111,10 +112,13 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
-#Django registration proesse edited by Kulbir
+#PayPal
+PAYPAL_RECEIVER_EMAIL = "hanna25s@uregina.ca"
+PAYPAL_TEST = True
+
 #ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 LOGIN_REDIRECT_URL ='/user_profile'
-#Kulbir edit ends
+LOGIN_URL = '/accounts/login'
