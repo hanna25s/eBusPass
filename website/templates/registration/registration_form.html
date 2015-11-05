@@ -1,20 +1,29 @@
-{% extends "base.html" %}
+{% extends "website/base.html" %}
 {% load i18n %}
-{% load crispy_forms_tags %}
+
 
 
 {% block content %}
-<div class='row'>
-<div class='col-sm-6 col-sm-offset-3'>
+<div class="wrapper style3">
+  <div class="inner">
+    <div class="container">
+      <div class="row">
+        <div class="3u">
+        </div>
+        <div class="6u">
 <h1>Register for free!</h1>
 <form method="post" action=".">
   {% csrf_token %}
-  {{ form|crispy }}
+  {{ form }}
 
   <input class='btn btn-block btn-primary' type="submit" value="{% trans 'Join' %}" />
 </form>
 </div>
 </div>
+</div>
+</div>
+</div>
+
 
 <hr/>
 <div class='row'>

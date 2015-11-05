@@ -26,7 +26,12 @@ SECRET_KEY = '%98(=su71!zonq*vza*ggs$whye#vey)kfts!+p_qfw=kq5$gj'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+# Setting up Django to send out emails only
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'ebuspassadm@gmail.com'
+EMAIL_HOST_PASSWORD = '@ense400#'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 # Application definition
 
@@ -39,8 +44,12 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'website',
     'registration',
-    'crispy_forms',
+
+
         'paypal.standard.ipn',
+
+    #'crispy_forms',
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -112,13 +121,18 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
+
 #PayPal
 PAYPAL_RECEIVER_EMAIL = "hanna25s@uregina.ca"
 PAYPAL_TEST = True
 
-#ACCOUNT_ACTIVATION_DAYS = 7
+
+
+#Django registration proesse edited by Kulbir
+ACCOUNT_ACTIVATION_DAYS = 7
+
 REGISTRATION_AUTO_LOGIN = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
 LOGIN_REDIRECT_URL ='/user_profile'
 LOGIN_URL = '/accounts/login'

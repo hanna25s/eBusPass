@@ -20,5 +20,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('website.urls')),
     #adding urls for registration
-    url(r'^accounts/', include('registration.backends.simple.urls')),
+    url(r'^accounts/', include('registration.backends.default.urls')),
 ]
