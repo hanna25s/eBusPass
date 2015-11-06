@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 from .forms import PurchasePassForm
+from .models import UserForm
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -15,7 +16,8 @@ def purchase_history(request):
 
 @login_required
 def account_info(request):
-	return render(request, 'website/account_info.html')
+	form = UserForm()
+	return render(request, 'website/account_info.html', {'form':form})
 
 @login_required
 def purchase_pass(request):

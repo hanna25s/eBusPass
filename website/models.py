@@ -10,6 +10,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.forms import ModelForm
 
 
 class Buspass(models.Model):
@@ -45,10 +46,10 @@ class Transactions(models.Model):
         verbose_name_plural = 'Transactions'
 
 class AuthUser(models.Model):
-    password = models.CharField(max_length=128)
     last_login = models.DateTimeField(blank=True, null=True)
     is_superuser = models.IntegerField()
     username = models.CharField(unique=True, max_length=30)
+    password = models.CharField(max_length=128)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     email = models.CharField(max_length=254)
@@ -59,3 +60,9 @@ class AuthUser(models.Model):
     class Meta:
         managed = False
         db_table = 'auth_user'
+
+class UserForm(ModelForm):
+
+    class Meta:
+        model = AuthUser
+        exclude = ['last_login', 'is_superuser', 'is_staff', 'is_active', 'date_joined']
