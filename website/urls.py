@@ -12,6 +12,9 @@ urlpatterns = [
 
         #urls(r'^accounts/', include('registration.backends.default.urls')),
 
+    url(r'^purchase_pass/success',  views.paypal_success),
+    url(r'^purchase_pass/cancel',  views.paypal_cancel),
+    url(r'^purchase_pass/notify', views.paypal_notify),
     url(r'^purchase_pass/', views.purchase_pass),
     url(r'^confirmation/', views.confirmation),
     url(r'^signout/', views.signout),
