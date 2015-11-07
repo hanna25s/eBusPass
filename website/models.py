@@ -37,6 +37,11 @@ class Transactions(models.Model):
     paymenttype = models.CharField(db_column='paymentType', max_length=45)  # Field name made lowercase.
     userid = models.ForeignKey('AuthUser', db_column='userId')  # Field name made lowercase.
 
+    @classmethod
+    def create(cls, cost, paymenttype, userid):
+        transaction = cls(cost=cost, paymenttype=paymenttype,gst=cost*0.05,pst=cost*0.05,total=cost*0.1+cost, userid=userid)
+        return transaction
+
     def __str__(self):
         return str(self.transactionid)
 
