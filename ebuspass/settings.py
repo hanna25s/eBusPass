@@ -123,7 +123,7 @@ STATICFILES_DIRS = (
 
 
 #PayPal
-PAYPAL_RECEIVER_EMAIL = "hanna25s@uregina.ca"
+PAYPAL_RECEIVER_EMAIL = "ebuspassadm-facilitator@gmail.com"
 PAYPAL_TEST = True
 
 
