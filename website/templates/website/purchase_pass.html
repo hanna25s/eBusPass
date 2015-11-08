@@ -21,7 +21,7 @@
 									Aliquam luctus et mattis lectus sit amet pulvinar. Nam turpis nisi
 									consequat etiam.</p>
 									<footer>
-										<a href="#" class="button icon fa-info-circle">Find out more</a>
+										<a href="/user_profile" class="button icon fa-info-circle">Find out more</a>
 									</footer>
 								</section>
 							</div>
@@ -29,41 +29,29 @@
 						<div class="8u 12u(mobile) important(mobile)">
 							<div id="content">
 								<header>
-								<!-- Content -->
-								<h2>WELCOME TO YOUR PAYMENT PORTAL</h2>
-								<span style="color:red">{{cancel}}</span>
-								<span style="color:green">{{success}}</span>
+									<!-- Content -->
+									<h2>WELCOME TO YOUR PAYMENT PORTAL</h2>
+									<span style="color:red">{{cancel}}</span>
+									<span style="color:green">{{success}}</span>
 								</header>
 								<div class="row">
-									<div class="6u">
-									<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
-										<input type="hidden" name="cmd" value="_s-xclick">
-										<input type="hidden" name="hosted_button_id" value="8TSGVASLLDW6L">
-										<table>
-											<tr><td><input type="hidden" name="on0" value="Monthly Pass">Monthly Pass</td></tr><tr><td><select name="os0">
-												<option value="Youth">Youth $55.00 CAD</option>
-												<option value="Post Secondary">Post Secondary $65.00 CAD</option>
-												<option value="Adult">Adult $75.00 CAD</option>
-											</select> </td></tr>
-										</table>
-										<input type="hidden" name="currency_code" value="CAD">
-										<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-										<img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-									</form>
-								</div>
-								<div class="6u">
-									<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
-										<input type="hidden" name="cmd" value="_s-xclick">
-										<input type="hidden" name="hosted_button_id" value="3SF78VX5AQFQJ">
-										<table>
-											<tr><td><input type="hidden" name="on0" value="Per Ride">Per Ride</td></tr><tr><td><select name="os0">
-												<option value="Ten Rides">Ten Rides $24.50 CAD</option>
-											</select> </td></tr>
-										</table>
-										<input type="hidden" name="currency_code" value="CAD">
-										<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-										<img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-									</form>
+									<div class="4u">
+										<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+											{{monthly_form}}
+											<select name="os0">
+												<option name="os0" value="Select pass type">Select Monthly Pass Type</option>
+												<option name="os0" value="Youth">Youth - $55</option>
+												<option name="os0" value="Post Secondary">Post Secondary - $65</option>
+												<option name="os0" value="Adult">Adult - $75</option>
+											</select>
+											<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="Buy it Now" />
+										</form>
+									</div>
+									<div class="1u"></div>
+									<div class="4u">
+										<span>Purchase 10 Rides</span>
+										{{per_ride_form.sandbox}}
+									</div>
 								</div>
 							</div>
 						</div>
@@ -72,4 +60,4 @@
 			</div>
 		</div>
 	</div>
-	{% endblock %}
+{% endblock %}
