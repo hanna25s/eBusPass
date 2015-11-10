@@ -6,72 +6,26 @@
   <div class="inner">
     <div class="container">
       <div class="row">
-        <div class="3u"></div>
-        <div class="6u">
+        <div class="2u"></div>
+        <div class="8u">
           <header class="major">
             <h2>Purchase History</h2>
           </header>
           <table class="default">
             <tr>
               <th>Date</th>
-              <th>Amount</th>
-              <th>Payment Type</th>
+              <th>Cost</th>
+              <th>Pass Type</th>
+              <th>Quantity</th>
             </tr>
-            <tr>
-              <td>March 28th, 2015</td>
-              <td>$67.76</td>
-              <td>BitCoins</td>
+            {% for purchase in purchase_history %}
+            <tr style="background-color:{% cycle '#eee' '#fff' %}">
+              <td>{{purchase.payment_date}}</td>
+              <td>{{purchase.mc_gross}}</td>
+              <td>{{purchase.get_pass_type}} {{purchase.item_name}}</td>
+              <td>{{purchase.quantity}}</td>
             </tr>
-            <tr>
-              <td>January 4th, 2015</td>
-              <td>$79.93</td>
-              <td>PayPal</td>
-            </tr>
-            <tr>
-              <td>May 3rd, 2001</td>
-              <td>$23.34</td>
-              <td>Visa</td>
-            </tr>
-            <tr>
-              <td>May 3rd, 2001</td>
-              <td>$23.34</td>
-              <td>Visa</td>
-            </tr>
-            <tr>
-              <td>May 3rd, 2001</td>
-              <td>$23.34</td>
-              <td>Visa</td>
-            </tr>
-            <tr>
-              <td>May 3rd, 2001</td>
-              <td>$23.34</td>
-              <td>Visa</td>
-            </tr>
-            <tr>
-              <td>May 3rd, 2001</td>
-              <td>$23.34</td>
-              <td>Visa</td>
-            </tr>
-            <tr>
-              <td>May 3rd, 2001</td>
-              <td>$23.34</td>
-              <td>Visa</td>
-            </tr>
-            <tr>
-              <td>May 3rd, 2001</td>
-              <td>$23.34</td>
-              <td>Visa</td>
-            </tr>
-            <tr>
-              <td>May 3rd, 2001</td>
-              <td>$23.34</td>
-              <td>Visa</td>
-            </tr>
-            <tr>
-              <td>May 3rd, 2001</td>
-              <td>$23.34</td>
-              <td>Visa</td>
-            </tr>
+            {% endfor %}
           </table>
         </div>
         <div class="3u"></div>

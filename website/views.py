@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from django.http import HttpResponse
-from .models import UserForm, Transactions, AuthUser
+from .models import UserForm, AuthUser, PaypalIpn
 from django.contrib.auth.decorators import login_required
 from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
@@ -15,7 +15,9 @@ def index(request):
 
 @login_required
 def purchase_history(request):
-	return render(request, 'website/purchase_history.html')
+	history = PaypalIpn.objects.filter(custom=request.user.id)
+	context = {"purchase_history":history}
+	return render(request, 'website/purchase_history.html', context)
 
 @login_required
 def account_info(request):
@@ -33,7 +35,8 @@ def purchase_pass(request):
 		"return_url": "http://54.84.253.83/purchase_pass/success/",
 		"cancel_return": "http://54.84.253.83/purchase_pass/cancel/",
 		"undefined_quantity":1,
-		"custom":current_user.id
+		"custom":current_user.id,
+		"currency_code":"CAD",
 	}
 	monthly = {
 		"business": settings.PAYPAL_RECEIVER_EMAIL,
