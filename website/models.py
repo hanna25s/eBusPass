@@ -27,29 +27,6 @@ class Buspass(models.Model):
         db_table = 'BusPass'
         verbose_name_plural = "Bus Passes"
 
-class Transactions(models.Model):
-    transactionid = models.AutoField(db_column='transactionId', primary_key=True)  # Field name made lowercase.
-    date = models.DateTimeField()
-    gst = models.FloatField()
-    pst = models.FloatField()
-    cost = models.FloatField()
-    total = models.FloatField()
-    paymenttype = models.CharField(db_column='paymentType', max_length=45)  # Field name made lowercase.
-    userid = models.ForeignKey('AuthUser', db_column='userId')  # Field name made lowercase.
-
-    @classmethod
-    def create(cls, cost, paymenttype, userid):
-        transaction = cls(cost=cost, paymenttype=paymenttype,gst=cost*0.05,pst=cost*0.05,total=cost*0.1+cost, userid=userid)
-        return transaction
-
-    def __str__(self):
-        return str(self.transactionid)
-
-    class Meta:
-        managed = False
-        db_table = 'Transactions'
-        verbose_name_plural = 'Transactions'
-
 class AuthUser(models.Model):
     last_login = models.DateTimeField(blank=True, null=True)
     is_superuser = models.IntegerField()
@@ -62,6 +39,8 @@ class AuthUser(models.Model):
     is_active = models.IntegerField()
     date_joined = models.DateTimeField()
 
+    def __str__(self):
+        return str(self.id) + ' - ' + self.username
     class Meta:
         managed = False
         db_table = 'auth_user'

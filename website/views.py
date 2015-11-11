@@ -1,12 +1,24 @@
 from django.shortcuts import render
 
 from django.http import HttpResponse
-from .models import UserForm, AuthUser, PaypalIpn
+from django.core.signals import request_finished
+from django.dispatch import receiver
 from django.contrib.auth.decorators import login_required
-from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
+
+from paypal.standard.models import ST_PP_COMPLETED
+from paypal.standard.ipn.signals import valid_ipn_received
+from paypal.standard.forms import PayPalPaymentsForm
+
+from .models import UserForm, AuthUser, PaypalIpn, Buspass
+
+
+from django.utils import timezone
+import datetime
+import logging
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -15,7 +27,7 @@ def index(request):
 
 @login_required
 def purchase_history(request):
-	history = PaypalIpn.objects.filter(custom=request.user.id)
+	history = PaypalIpn.objects.filter(custom=request.user.id).order_by('-payment_date')
 	context = {"purchase_history":history}
 	return render(request, 'website/purchase_history.html', context)
 
@@ -90,3 +102,33 @@ def paypal_success(request):
 def paypal_cancel(request):
 	cancel = "Transaction Cancelled"
 	return render(request, 'website/purchase_pass.html', {'cancel':cancel})
+
+@receiver(valid_ipn_received)
+def update_pass(sender, **kwargs):
+
+	ipn_obj = sender
+	quantity = ipn_obj.quantity
+
+	if ipn_obj.payment_status == ST_PP_COMPLETED:
+		user = AuthUser.objects.get(id=ipn_obj.custom)
+		if(not user):
+			return -1
+
+		try:
+			bus_pass = Buspass.objects.get(userid=user.id)
+		except Buspass.DoesNotExist:
+			bus_pass = Buspass()
+			bus_pass.userid = user
+			bus_pass.rides = 0
+			bus_pass.monthlypass = None
+
+		if (ipn_obj.item_name == "10 Rides"):
+			bus_pass.rides += quantity * 10
+		elif (ipn_obj.item_name == "Monthly Pass"):
+			pass_time = datetime.timedelta(quantity*365/12)
+			if(bus_pass.monthlypass is None or
+			bus_pass.monthlypass <= timezone.make_aware(datetime.datetime.now(), timezone.get_current_timezone())):
+				bus_pass.monthlypass = datetime.datetime.now() + pass_time
+			else:
+				bus_pass.monthlypass += pass_time
+		bus_pass.save()
