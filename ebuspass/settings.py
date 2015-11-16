@@ -46,6 +46,8 @@ INSTALLED_APPS = (
     'registration',
     'paypal.standard.ipn',
 
+
+
 )
 
 MIDDLEWARE_CLASSES = (

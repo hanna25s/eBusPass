@@ -11,6 +11,12 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.forms import ModelForm
+# customm auth
+
+
+
+#ca ends
+
 
 
 class Buspass(models.Model):
@@ -45,11 +51,29 @@ class AuthUser(models.Model):
         managed = False
         db_table = 'auth_user'
 
+class Name(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return str(self.id) + ' - ' + self.first_name
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
+
+class NameForm(ModelForm):
+    class Meta:
+        model = Name
+        fields = ['first_name', 'last_name']
+
 class UserForm(ModelForm):
 
     class Meta:
         model = AuthUser
-        exclude = ['last_login', 'is_superuser', 'is_staff', 'is_active', 'date_joined']
+        fields = ['first_name', 'last_name','email']
+
+
+
 
 class PaypalIpn(models.Model):
     business = models.CharField(max_length=127)
