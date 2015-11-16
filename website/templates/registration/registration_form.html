@@ -12,11 +12,12 @@
         </div>
         <div class="6u">
           <h1>Register for free!</h1>
-          <form method="post" action=".">
-            {% csrf_token %}
+          <form method="post" action=".">{%csrf_token %}
+
             {{ form }}
 
             <input class='btn btn-block btn-primary' type="submit" value="{% trans 'Join' %}" />
+
           </form>
         </div>
       </div>

@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^purchase_history/', views.purchase_history),
     url(r'^account_info/', views.account_info),
+    url(r'^reg_name/', views.reg_name),
     url(r'^purchase_pass/success/',  views.paypal_success),
     url(r'^purchase_pass/cancel/',  views.paypal_cancel),
     url(r'^purchase_pass/notify/', include('paypal.standard.ipn.urls')),

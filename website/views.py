@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.core.signals import request_finished
 from django.dispatch import receiver
 from django.contrib.auth.decorators import login_required
@@ -12,7 +13,7 @@ from paypal.standard.models import ST_PP_COMPLETED
 from paypal.standard.ipn.signals import valid_ipn_received
 from paypal.standard.forms import PayPalPaymentsForm
 
-from .models import UserForm, AuthUser, PaypalIpn, Buspass
+from .models import UserForm, NameForm, Name, AuthUser, PaypalIpn, Buspass
 
 
 from django.utils import timezone
@@ -32,10 +33,31 @@ def purchase_history(request):
 	return render(request, 'website/purchase_history.html', context)
 
 @login_required
-def account_info(request):
-	form = UserForm()
-	return render(request, 'website/account_info.html', {'form':form})
+def reg_name(request):
+	k=request.user.id
+	a = Name.objects.get(pk=k)
+	f = NameForm(request.POST,instance=a)
+	if f.is_valid():
+		f.save()
+		return render(request,'website/user_profile.html')
+	else:
+		form = NameForm(instance=a)
+		return render(request, 'website/reg_name.html', {'form':form})
 
+@login_required
+def account_info(request):
+
+
+	#if request.method == "POST":
+	k=request.user.id
+	a = AuthUser.objects.get(pk=k)
+	f = UserForm(request.POST,instance=a)
+	if f.is_valid():
+		f.save()
+		return render(request,'website/user_profile.html')
+	else:
+		form = UserForm(instance=a)
+		return render(request, 'website/account_info.html', {'form':form})
 @login_required
 def purchase_pass(request):
 	current_user = request.user
