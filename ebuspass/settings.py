@@ -121,6 +121,7 @@ STATICFILES_DIRS = (
 #PayPal
 PAYPAL_RECEIVER_EMAIL = "ebuspassadm-facilitator@gmail.com"
 PAYPAL_TEST = True
+PAYPAL_URL = "http://54.84.253.83"
 
 
 
