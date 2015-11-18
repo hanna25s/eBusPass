@@ -22,14 +22,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Create your views here.
-
 def index(request):
 	return render(request, 'website/landing_page.html')
 
 @login_required
 def purchase_history(request):
+	bus_pass = get_pass(request.user)
 	history = PaypalIpn.objects.filter(custom=request.user.id,flag=0).order_by('-payment_date')
-	context = {"purchase_history":history}
+	context = {"purchase_history":history, "bus_pass":bus_pass}
 	return render(request, 'website/purchase_history.html', context)
 
 @login_required
@@ -46,8 +46,6 @@ def reg_name(request):
 
 @login_required
 def account_info(request):
-
-
 	#if request.method == "POST":
 	k=request.user.id
 	a = AuthUser.objects.get(pk=k)
@@ -58,6 +56,7 @@ def account_info(request):
 	else:
 		form = UserForm(instance=a)
 		return render(request, 'website/account_info.html', {'form':form})
+
 @login_required
 def purchase_pass(request):
 	current_user = request.user
@@ -220,3 +219,10 @@ def update_pass(sender, **kwargs):
 			else:
 				bus_pass.monthlypass += pass_time
 		bus_pass.save()
+
+def get_pass(user):
+	try:
+		bus_pass = Buspass.objects.get(userid=user.id)
+		return bus_pass
+	except Buspass.DoesNotExist:
+		return None

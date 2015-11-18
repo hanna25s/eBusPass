@@ -11,6 +11,14 @@
           <header class="major">
             <h2>Purchase History</h2>
           </header>
+          {{user.userid}}
+          <span><b>Current Pass Status:</b></span><br/>
+          {% if not bus_pass %}
+            <span> You currently do not have a bus pass</span></br>
+          {% else %}
+            <span> Rides Remaining: {{bus_pass.rides}}</span></br>
+            <span> Monthly Expiration Date: {{bus_pass.monthlypass}} </span></br>
+          {% endif %}
           <table class="default">
             <tr>
               <th>Date</th>
