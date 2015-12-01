@@ -1,24 +1,23 @@
 from django.shortcuts import render
 
 from django.http import HttpResponse
-from django.http import HttpResponseRedirect
 from django.core.signals import request_finished
 from django.dispatch import receiver
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
-from paypal.standard.models import ST_PP_COMPLETED
-from paypal.standard.ipn.signals import valid_ipn_received
-from paypal.standard.forms import PayPalPaymentsForm
+from django.core.urlresolvers import reverse
 
 from .models import UserForm, NameForm, Name, AuthUser, PaypalIpn, Buspass
-
+from .forms import PurchaseForm
 
 from django.utils import timezone
 import datetime
 import logging
+import braintree
+
 logger = logging.getLogger(__name__)
 
 # Create your views here.
@@ -26,11 +25,55 @@ def index(request):
 	return render(request, 'website/landing_page.html')
 
 @login_required
+def checkout(request):
+	if request.method == "POST":
+		if request.POST['quantity']  == "":
+			error = "You must enter a quantity"
+			return reverse("website/purchase_pass.html")
+
+		quantity = float(request.POST['quantity'])
+
+		if (quantity <= 0):
+			error = "You must enter a valid quantity"
+
+		pass_type = request.POST['pass_type']
+		nonce = request.POST['payment_method_nonce']
+		cost = 0
+
+		if pass_type == "1":
+			cost = 20.00
+		elif pass_type == "2":
+			cost = 22.50
+		elif pass_type == "3":
+			cost = 55.00
+		elif pass_type == "4":
+			cost = 65.00
+		elif pass_type == "5":
+			cost = 75.00
+
+		amount = quantity * cost
+
+		result = braintree.Transaction.sale({
+    	"amount": str(amount),
+    	"payment_method_nonce": nonce,
+		    "options": {
+        "submit_for_settlement": True
+    	}
+		})
+		context = {"result":result, "nonce":nonce, "cost":cost, "pass_type":pass_type}
+		return render(request, 'website/purchase_complete.html', context)
+	else:
+		return render(request, 'website/purchase_pass.html')
+@login_required
 def purchase_history(request):
 	bus_pass = get_pass(request.user)
 	history = PaypalIpn.objects.filter(custom=request.user.id,flag=0).order_by('-payment_date')
 	context = {"purchase_history":history, "bus_pass":bus_pass}
 	return render(request, 'website/purchase_history.html', context)
+
+@login_required
+def purchase_complete(reques):
+	return render(request, 'website/purchase_complete.html')
 
 @login_required
 def reg_name(request):
@@ -59,40 +102,9 @@ def account_info(request):
 
 @login_required
 def purchase_pass(request):
-	current_user = request.user
-	ten_rides = {
-		"business": settings.PAYPAL_RECEIVER_EMAIL,
-		"amount": "24.50",
-		"item_name": "10 Rides",
-		"notify_url": settings.PAYPAL_URL + "/purchase_pass/notify/",
-		"return_url": settings.PAYPAL_URL + "/purchase_pass/success/",
-		"cancel_return": settings.PAYPAL_URL + "/purchase_pass/cancel/",
-		"undefined_quantity":1,
-		"custom":current_user.id,
-		"currency_code":"CAD",
-	}
-	monthly = {
-		"business": settings.PAYPAL_RECEIVER_EMAIL,
-		"item_name": "Monthly Pass",
-		"notify_url": settings.PAYPAL_URL + "/purchase_pass/notify/",
-		"return_url": settings.PAYPAL_URL + "/purchase_pass/success/",
-		"cancel_return": settings.PAYPAL_URL + "/purchase_pass/cancel/",
-		"undefined_quantity":1,
-		"on0":"Monthly",
-		"os0":"Pass Type",
-		"option_select0":"Youth",
-		"option_amount0":55,
-		"option_select1":"Post Secondary",
-		"option_amount1":65,
-		"option_select2":"Adult",
-		"option_amount2":75,
-		"currency_code":"CAD",
-		"custom":current_user.id
-	}
-
-	per_ride_form = PayPalPaymentsForm(initial=ten_rides)
-	monthly_form = PayPalPaymentsForm(initial=monthly)
-	context = {"per_ride_form":per_ride_form, "monthly_form":monthly_form}
+	token = braintree.ClientToken.generate()
+	form = PurchaseForm()
+	context = {"token":token, "form":form}
 	return render(request, 'website/purchase_pass.html', context)
 
 @login_required
@@ -113,84 +125,6 @@ def signin(request):
 def user_profile(request):
 	return render(request, 'website/user_profile.html')
 
-@csrf_exempt
-@login_required
-def paypal_success(request):
-	current_user = request.user
-	ten_rides = {
-		"business": settings.PAYPAL_RECEIVER_EMAIL,
-		"amount": "24.50",
-		"item_name": "10 Rides",
-		"notify_url": settings.PAYPAL_URL + "/purchase_pass/notify/",
-		"return_url": settings.PAYPAL_URL + "/purchase_pass/success/",
-		"cancel_return": settings.PAYPAL_URL + "/purchase_pass/cancel/",
-		"undefined_quantity":1,
-		"custom":current_user.id,
-		"currency_code":"CAD",
-	}
-	monthly = {
-		"business": settings.PAYPAL_RECEIVER_EMAIL,
-		"item_name": "Monthly Pass",
-		"notify_url": settings.PAYPAL_URL + "/purchase_pass/notify/",
-		"return_url": settings.PAYPAL_URL + "/purchase_pass/success/",
-		"cancel_return": settings.PAYPAL_URL + "/purchase_pass/cancel/",
-		"undefined_quantity":1,
-		"on0":"Monthly",
-		"os0":"Pass Type",
-		"option_select0":"Youth",
-		"option_amount0":55,
-		"option_select1":"Post Secondary",
-		"option_amount1":65,
-		"option_select2":"Adult",
-		"option_amount2":75,
-		"currency_code":"CAD",
-		"custom":current_user.id
-	}
-	per_ride_form = PayPalPaymentsForm(initial=ten_rides)
-	monthly_form = PayPalPaymentsForm(initial=monthly)
-	success = "Thank you for your purchase! Your pass has been updated."
-	context = {"per_ride_form":per_ride_form, "monthly_form":monthly_form, "success":success}
-	return render(request, 'website/purchase_pass.html', context)
-
-@login_required
-def paypal_cancel(request):
-	current_user = request.user
-	ten_rides = {
-		"business": settings.PAYPAL_RECEIVER_EMAIL,
-		"amount": "24.50",
-		"item_name": "10 Rides",
-		"notify_url": settings.PAYPAL_URL + "/purchase_pass/notify/",
-		"return_url": settings.PAYPAL_URL + "/purchase_pass/success/",
-		"cancel_return": settings.PAYPAL_URL + "/purchase_pass/cancel/",
-		"undefined_quantity":1,
-		"custom":current_user.id,
-		"currency_code":"CAD",
-	}
-	monthly = {
-		"business": settings.PAYPAL_RECEIVER_EMAIL,
-		"item_name": "Monthly Pass",
-		"notify_url": settings.PAYPAL_URL + "/purchase_pass/notify/",
-		"return_url": settings.PAYPAL_URL + "/purchase_pass/success/",
-		"cancel_return": settings.PAYPAL_URL + "/purchase_pass/cancel/",
-		"undefined_quantity":1,
-		"on0":"Monthly",
-		"os0":"Pass Type",
-		"option_select0":"Youth",
-		"option_amount0":55,
-		"option_select1":"Post Secondary",
-		"option_amount1":65,
-		"option_select2":"Adult",
-		"option_amount2":75,
-		"currency_code":"CAD",
-		"custom":current_user.id
-	}
-	per_ride_form = PayPalPaymentsForm(initial=ten_rides)
-	monthly_form = PayPalPaymentsForm(initial=monthly)
-	cancel = "Transaction Cancelled"
-	context = {"per_ride_form":per_ride_form, "monthly_form":monthly_form, "cancel":cancel}
-	return render(request, 'website/purchase_pass.html', context)
-
-@receiver(valid_ipn_received)
 def update_pass(sender, **kwargs):
 
 	ipn_obj = sender

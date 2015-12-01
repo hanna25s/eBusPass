@@ -20,26 +20,17 @@
 								<header>
 									<!-- Content -->
 									<h2>WELCOME TO YOUR PAYMENT PORTAL</h2>
-									<span style="color:red">{{cancel}}</span>
-									<span style="color:green">{{success}}</span>
 								</header>
 								<div class="row">
 									<div class="12u(mobile) important(mobile)">
-										<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
-											{{monthly_form}}
-											<select name="os0">
-												<option name="os0" value="Select pass type">Select Monthly Pass Type</option>
-												<option name="os0" value="Youth">Youth - $55</option>
-												<option name="os0" value="Post Secondary">Post Secondary - $65</option>
-												<option name="os0" value="Adult">Adult - $75</option>
-											</select>
-											<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="Buy it Now" />
+										<form action="/checkout/" method="post">
+											{% csrf_token %}
+											<label for="pass_type">Select A Pass Below</label>
+											{{form}}
+										  <br/><br/>
+  										<div id="dropin-container"></div>
+											<input type="submit" name="purchase" value="Purchase"/>
 										</form>
-									</div>
-									<div class="1u"></div>
-									<div class="4u 12u(mobile) important(mobile)">
-										<span>Purchase 10 Rides</span>
-										{{per_ride_form.sandbox}}
 									</div>
 								</div>
 							</div>
@@ -49,4 +40,10 @@
 			</div>
 		</div>
 	</div>
+	<script src="https://js.braintreegateway.com/v2/braintree.js"></script>
+	<script type="text/javascript">
+		braintree.setup("{{token}}", "dropin", {
+	  container: "dropin-container"
+	});
+	</script>
 {% endblock %}

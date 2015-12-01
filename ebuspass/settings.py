@@ -12,6 +12,14 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import braintree
+
+braintree.Configuration.configure(
+    braintree.Environment.Sandbox,
+    'yqqsg4xhsf3b22k8',
+    'g34ngrwjfnptkg7p',
+    '300d0cfb983f57f4eb50db57f066ccb7'
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -44,10 +52,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'website',
     'registration',
-    'paypal.standard.ipn',
-
-
-
 )
 
 MIDDLEWARE_CLASSES = (
@@ -118,13 +122,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
-
-
-#PayPal
-PAYPAL_RECEIVER_EMAIL = "ebuspassadm-facilitator@gmail.com"
-PAYPAL_TEST = True
-PAYPAL_URL = "http://54.84.253.83"
-
 
 
 #Django registration proesse edited by Kulbir
