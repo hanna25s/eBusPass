@@ -10,7 +10,7 @@ from django.http import HttpResponse
 
 from django.core.urlresolvers import reverse
 
-from .models import UserForm, NameForm, Name, AuthUser, PaypalIpn, Buspass
+from .models import UserForm, NameForm, Name, AuthUser, Buspass, Transactions
 from .forms import PurchaseForm
 
 from django.utils import timezone
@@ -28,13 +28,14 @@ def index(request):
 def checkout(request):
 	if request.method == "POST":
 		if request.POST['quantity']  == "":
-			error = "You must enter a quantity"
-			return reverse("website/purchase_pass.html")
+			context = {"error":"You must enter a quantity"}
+			return render(request, 'website/purchase_pass.html', context)
 
 		quantity = float(request.POST['quantity'])
 
 		if (quantity <= 0):
-			error = "You must enter a valid quantity"
+			context = {"error":"You must enter a valid quantity"}
+			return render(request, 'website/purchase_pass.html', context)
 
 		pass_type = request.POST['pass_type']
 		nonce = request.POST['payment_method_nonce']
@@ -52,6 +53,7 @@ def checkout(request):
 			cost = 75.00
 
 		amount = quantity * cost
+		user = AuthUser.objects.get(id=request.user.id)
 
 		result = braintree.Transaction.sale({
     	"amount": str(amount),
@@ -60,10 +62,40 @@ def checkout(request):
         "submit_for_settlement": True
     	}
 		})
-		context = {"result":result, "nonce":nonce, "cost":cost, "pass_type":pass_type}
-		return render(request, 'website/purchase_complete.html', context)
+
+		if result.is_success:
+			try:
+				bus_pass = Buspass.objects.get(userid=user.id)
+			except Buspass.DoesNotExist:
+				bus_pass = Buspass()
+				bus_pass.userid = user
+				bus_pass.rides = 0
+				bus_pass.monthlypass = None
+
+			if (pass_type == "1" or pass_type == "2"):
+				bus_pass.rides += quantity * 10
+			elif (pass_type == "3" or pass_type == "4" or pass_type == "5"):
+				pass_time = datetime.timedelta(quantity*365/12)
+				if(bus_pass.monthlypass is None or
+				bus_pass.monthlypass <= timezone.make_aware(datetime.datetime.now(), timezone.get_current_timezone())):
+					bus_pass.monthlypass = datetime.datetime.now() + pass_time
+				else:
+					bus_pass.monthlypass += pass_time
+			bus_pass.save()
+
+			transaction = Transactions()
+			transaction.userid = user
+			transaction.cost = amount
+			transaction.save()
+
+			return render(request, 'website/purchase_complete.html')
+		else:
+			context = {"error":"Transaction Failed"}
+			return render(request, 'website/purchase_pass.html', context)
 	else:
-		return render(request, 'website/purchase_pass.html')
+		context = {"error":"Invalid access attempt"}
+		return render(request, 'website/purchase_pass.html', context)
+
 @login_required
 def purchase_history(request):
 	bus_pass = get_pass(request.user)
