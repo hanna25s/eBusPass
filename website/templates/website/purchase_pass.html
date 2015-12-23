@@ -23,7 +23,8 @@
 								</header>
 								<div class="row">
 									<div class="12u(mobile) important(mobile)">
-										<form action="/checkout/" method="post">
+										<span style="color:red;">{{error}}</span>
+										<form action="/purchase_pass/" method="post">
 											{% csrf_token %}
 											<label for="pass_type">Select A Pass Below</label>
 											{{form}}
