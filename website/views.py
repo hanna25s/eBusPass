@@ -97,7 +97,7 @@ def checkout(request):
 @login_required
 def purchase_history(request):
 	bus_pass = get_pass(request.user)
-	history = PaypalIpn.objects.filter(custom=request.user.id,flag=0).order_by('-payment_date')
+	history = Transactions.objects.filter(userid=request.user.id).order_by('-date')
 	context = {"purchase_history":history, "bus_pass":bus_pass}
 	return render(request, 'website/purchase_history.html', context)
 
@@ -119,7 +119,6 @@ def reg_name(request):
 
 @login_required
 def account_info(request):
-	#if request.method == "POST":
 	k=request.user.id
 	a = AuthUser.objects.get(pk=k)
 	f = UserForm(request.POST,instance=a)
@@ -251,6 +250,10 @@ def update_pass(sender, **kwargs):
 			else:
 				bus_pass.monthlypass += pass_time
 		bus_pass.save()
+
+def generate_token(request):
+	if request.method == "GET":
+		return HttpResponse(braintree.ClientToken.generate())
 
 def get_pass(user):
 	try:

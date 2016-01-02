@@ -28,8 +28,8 @@
             </tr>
             {% for purchase in purchase_history %}
             <tr style="background-color:{% cycle '#eee' '#fff' %}">
-              <td>{{purchase.payment_date}}</td>
-              <td>{{purchase.mc_gross}}</td>
+              <td>{{purchase.date}}</td>
+              <td>{{purchase.cost}}</td>
               <td>{{purchase.get_pass_type}} {{purchase.item_name}}</td>
               <td>{{purchase.quantity}}</td>
             </tr>
