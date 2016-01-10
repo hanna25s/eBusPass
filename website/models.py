@@ -77,6 +77,8 @@ class Transactions(models.Model):
     date = models.DateTimeField()
     cost = models.FloatField()
     userid = models.ForeignKey('AuthUser', db_column='userId')  # Field name made lowercase.
+    passtype = models.CharField(max_length=45)
+    quantity = models.IntegerField()
 
     class Meta:
         managed = False
