@@ -165,6 +165,64 @@ def generate_token(request):
 	if request.method == "GET":
 		return HttpResponse(braintree.ClientToken.generate())
 
+@csrf_exempt
+def process_nonce(request):
+	if request.method == "POST":
+		nonce = request.POST['nonce']
+		pass_type = request.POST['pass_type']
+		quantity = int(request.POST['quantity'])
+		amount = request.POST['amount']
+		userid = 41
+
+		try:
+			user = AuthUser.objects.get(id=userid)
+		except Buspass.DoesNotExist:
+			return HttpResponse("Invalid User")
+
+		result = braintree.Transaction.sale({
+			"amount": str(amount),
+			"payment_method_nonce": nonce,
+			"options": {
+				"submit_for_settlement": True
+			}
+		})
+
+		if result.is_success:
+			try:
+				bus_pass = Buspass.objects.get(userid=user.id)
+			except Buspass.DoesNotExist:
+				bus_pass = Buspass()
+				bus_pass.userid = user
+				bus_pass.rides = 0
+				bus_pass.monthlypass = None
+
+			if (pass_type == "10 Rides - Adult" or pass_type == "10 Rides - Youth"):
+				bus_pass.rides += quantity * 10
+			elif (pass_type == "Monthly - Youth" or pass_type == "Monthly - Adult" or pass_type == "Monthly - Post Secondary"):
+				pass_time = quantity * 31
+				#Check to see if the pass is expired or valid. If valid, add to
+				#current expiry date. Otherwise, add one month starting today
+				if(bus_pass.monthlypass is None or bus_pass.monthlypass <= datetime.date.today()):
+					bus_pass.monthlypass = datetime.date.today() + timedelta(days=pass_time)
+				else:
+					bus_pass.monthlypass += timedelta(days=pass_time)
+
+			bus_pass.save()
+
+			transaction = Transactions()
+			transaction.userid = user
+			transaction.cost = amount
+			transaction.quantity = quantity
+			transaction.passtype = pass_type
+			transaction.save()
+
+			return HttpResponse("Success")
+		else:
+			return HttpResponse("Purchase Failed")
+
+	else:
+		return HttpResponse("404")
+
 def get_pass(user):
 	try:
 		bus_pass = Buspass.objects.get(userid=user.id)

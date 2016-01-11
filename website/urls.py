@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^user_profile/', views.user_profile),
     url(r'^purchase_complete/', views.purchase_complete),
     url(r'^generate_token/', views.generate_token),
+    url(r'^process_nonce/', views.process_nonce),
 ]
