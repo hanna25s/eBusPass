@@ -4,25 +4,30 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 from .models import UserForm, NameForm, Name, AuthUser, Buspass, Transactions
 from .forms import PurchaseForm
+import json
 
+#Timezone Libraries
 import datetime
 from datetime import timedelta
+import pytz
+
 import logging
+#PayPal API
 import braintree
 
 MONTHLY_ADULT_COST = 84.00
 MONTHLY_POST_SECONDARY_COST = 72.00
 MONTHLY_YOUTH_COST = 60.00
-
 PER_RIDE_ADULT_COST = 27.00
 PER_RIDE_YOUTH_COST = 22.00
 
 logger = logging.getLogger(__name__)
 
-# Create your views here.
+#Views
 def index(request):
 	return render(request, 'website/landing_page.html')
 
@@ -161,6 +166,7 @@ def signin(request):
 def user_profile(request):
 	return render(request, 'website/user_profile.html')
 
+#RESTful Endpoints
 def generate_token(request):
 	if request.method == "GET":
 		return HttpResponse(braintree.ClientToken.generate())
@@ -206,6 +212,8 @@ def process_nonce(request):
 					bus_pass.monthlypass = datetime.date.today() + timedelta(days=pass_time)
 				else:
 					bus_pass.monthlypass += timedelta(days=pass_time)
+			else:
+				return HttpResponse("Invalid pass type")
 
 			bus_pass.save()
 
@@ -220,12 +228,52 @@ def process_nonce(request):
 		else:
 			return HttpResponse("Purchase Failed")
 
-	else:
-		return HttpResponse("404")
+@csrf_exempt
+def get_pass_information(request):
+	if request.method == "POST":
+		user = get_user_from_request(request)
+		if(user is None):
+			return HttpResponse("Invalid User")
 
+		bus_pass = get_pass(user)
+
+		if(bus_pass is None):
+			return HttpResponse("No Pass")
+
+		response = JsonResponse({'rides':str(bus_pass.rides) ,'monthly':str(bus_pass.monthlypass) })
+		return HttpResponse(response)
+
+
+@csrf_exempt
+def ride_bus(request):
+	if request.method == "POST":
+		user = get_user_from_request(request)
+		if(user is None):
+			return HttpResponse("Invalid User")
+
+		bus_pass = get_pass(user)
+
+		if(bus_pass is None):
+			return HttpResponse("No Pass")
+
+		bus_pass.rides -= 1
+		bus_pass.save()
+
+		return HttpResponse("Pass Updated")
+
+#Helper Methods
 def get_pass(user):
 	try:
 		bus_pass = Buspass.objects.get(userid=user.id)
 		return bus_pass
 	except Buspass.DoesNotExist:
+		return None
+
+def get_user_from_request(request):
+	email = request.POST['email']
+	date_joined = datetime.datetime.strptime(request.POST['date_joined'], '%Y-%m-%d %H:%M:%S')
+	date_joined = date_joined.replace(tzinfo=pytz.UTC)
+	try:
+		return AuthUser.objects.get(email=email ,date_joined=date_joined)
+	except AuthUser.DoesNotExist:
 		return None

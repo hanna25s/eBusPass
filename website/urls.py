@@ -19,4 +19,6 @@ urlpatterns = [
     url(r'^purchase_complete/', views.purchase_complete),
     url(r'^generate_token/', views.generate_token),
     url(r'^process_nonce/', views.process_nonce),
+    url(r'^get_pass_information/', views.get_pass_information),
+    url(r'^ride_bus/', views.ride_bus),
 ]
