@@ -178,11 +178,9 @@ def process_nonce(request):
 		pass_type = request.POST['pass_type']
 		quantity = int(request.POST['quantity'])
 		amount = request.POST['amount']
-		userid = 41
+		user = get_user_from_request(request)
 
-		try:
-			user = AuthUser.objects.get(id=userid)
-		except Buspass.DoesNotExist:
+		if user is None:
 			return HttpResponse("Invalid User")
 
 		result = braintree.Transaction.sale({
