@@ -95,7 +95,7 @@ DATABASES = {
        'NAME': 'eBusPass',
         'USER': 'urense',
        'PASSWORD': '@ense400#',
-       'HOST':'54.84.253.83',
+       'HOST':'52.73.115.239',
        'PORT':'3306',
   }
 }
