@@ -252,7 +252,7 @@ def ride_bus(request):
 		bus_pass = get_pass(user)
 
 		if(bus_pass is None):
-			return HttpResponse(JsonResponse({'isValid':False , 'message':"You do not have a bus pass" }))
+			return HttpResponse(JsonResponse({'isValid':False , 'message':"No Pass" }))
 		elif(bus_pass.monthlypass is not None and bus_pass.monthlypass >= datetime.date.today()):
 			return HttpResponse(JsonResponse({'isValid':True , 'passType':"Monthly" , 'message':str(bus_pass.monthlypass) }))
 		elif(bus_pass.rides > 0):
