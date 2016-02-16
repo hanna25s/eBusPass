@@ -9,7 +9,8 @@ from django.http import JsonResponse
 from .models import UserForm, NameForm, Name, AuthUser, Buspass, Transactions
 from .forms import PurchaseForm
 import json
-
+from registration.backends.default.views import RegistrationView
+from registration.forms import RegistrationFormUniqueEmail
 #Timezone Libraries
 import datetime
 from datetime import timedelta
@@ -28,6 +29,10 @@ PER_RIDE_YOUTH_COST = 22.00
 logger = logging.getLogger(__name__)
 
 #Views
+
+
+def  RegistrationViewUniqueEmail(RegistrationView):
+    form_class = RegistrationFormUniqueEmail
 def index(request):
 	return render(request, 'website/landing_page.html')
 
