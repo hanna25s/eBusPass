@@ -1,24 +1,22 @@
-from django.shortcuts import render
-
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-
-from .models import UserForm, NameForm, Name, AuthUser, Buspass, Transactions
-from .forms import PurchaseForm
-import json
-from registration.backends.default.views import RegistrationView
-from registration.forms import RegistrationFormUniqueEmail
 #Timezone Libraries
 import datetime
-from datetime import timedelta
-import pytz
-
+import json
 import logging
+from datetime import timedelta
+
 #PayPal API
 import braintree
+import pytz
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from registration.backends.default.views import RegistrationView
+from registration.forms import RegistrationFormUniqueEmail
+
+from .forms import PurchaseForm
+from .models import AuthUser, Buspass, Name, NameForm, Transactions, UserForm
 
 MONTHLY_ADULT_COST = 84.00
 MONTHLY_POST_SECONDARY_COST = 72.00

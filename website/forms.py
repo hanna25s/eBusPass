@@ -1,6 +1,5 @@
 from django import forms
 
-
 PASS_TYPES = {
             (1, "10 Rides Youth - $22.00"),
             (2, "10 Rides Adult - $27.00"),
