@@ -94,11 +94,11 @@ DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.mysql',
        'NAME': 'eBusPass',
-        'USER': 'urense',
+       'USER': 'urense',
        'PASSWORD': '@ense400#',
-       'HOST':'52.73.115.239',
-       'PORT':'3306',
-  }
+       'HOST': '52.73.115.239',
+       'PORT': '3306',
+       }
 }
 
 
@@ -125,13 +125,13 @@ STATICFILES_DIRS = (
 )
 
 
-#Django registration proesse edited by Kulbir
+# Django registration proesse edited by Kulbir
 ACCOUNT_ACTIVATION_DAYS = 7
 
 REGISTRATION_AUTO_LOGIN = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 
-LOGIN_REDIRECT_URL ='/user_profile'
+LOGIN_REDIRECT_URL = '/user_profile'
 LOGIN_URL = '/accounts/login'
 
 # Logging config

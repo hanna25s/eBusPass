@@ -7,6 +7,7 @@ PASS_TYPES = {
             (4, "Post Secondary Monthly Pass - $72.00"),
             (5, "Adult Monthly Pass - $84.00")}
 
+
 class PurchaseForm(forms.Form):
     pass_type = forms.ChoiceField(choices=PASS_TYPES)
     quantity = forms.IntegerField()

@@ -13,7 +13,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Activation',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('id', models.AutoField(verbose_name='ID', auto_created=True,
+                 primary_key=True, serialize=False)),
                 ('key', models.CharField(max_length=100, unique=True)),
                 ('expirydate', models.DateTimeField(db_column='expiryDate')),
             ],
@@ -25,8 +26,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Buspass',
             fields=[
-                ('buspassid', models.IntegerField(db_column='busPassId', primary_key=True, serialize=False)),
-                ('monthlypass', models.DateTimeField(null=True, db_column='monthlyPass', blank=True)),
+                ('buspassid', models.IntegerField(db_column='busPassId',
+                 primary_key=True, serialize=False)),
+                ('monthlypass', models.DateTimeField(null=True,
+                 db_column='monthlyPass', blank=True)),
                 ('rides', models.IntegerField(null=True, blank=True)),
             ],
             options={
@@ -37,13 +40,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Transactions',
             fields=[
-                ('transactionid', models.AutoField(db_column='transactionId', primary_key=True, serialize=False)),
+                ('transactionid', models.AutoField(db_column='transactionId',
+                 primary_key=True, serialize=False)),
                 ('date', models.DateTimeField()),
                 ('gst', models.FloatField()),
                 ('pst', models.FloatField()),
                 ('cost', models.FloatField()),
                 ('total', models.FloatField()),
-                ('paymenttype', models.CharField(db_column='paymentType', max_length=45)),
+                ('paymenttype', models.CharField(db_column='paymentType',
+                 max_length=45)),
             ],
             options={
                 'managed': False,
@@ -53,12 +58,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='User',
             fields=[
-                ('userid', models.AutoField(db_column='userId', primary_key=True, serialize=False)),
+                ('userid', models.AutoField(db_column='userId',
+                 primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=45)),
                 ('username', models.CharField(max_length=45, unique=True)),
                 ('password', models.CharField(max_length=45)),
                 ('email', models.CharField(max_length=45, unique=True)),
-                ('registrationdate', models.DateTimeField(db_column='registrationDate')),
+                ('registrationdate', models.DateTimeField(
+                 db_column='registrationDate')),
                 ('status', models.TextField()),
             ],
             options={

@@ -1,11 +1,11 @@
-#wsgi.py
+# wsgi.py
 import os
 import sys
 
 from django.core.wsgi import get_wsgi_application
 
 # Calculate the path based on the location of the WSGI script.
-apache_configuration= os.path.dirname(__file__)
+apache_configuration = os.path.dirname(__file__)
 project = os.path.dirname(apache_configuration)
 workspace = os.path.dirname(project)
 sys.path.append(workspace)

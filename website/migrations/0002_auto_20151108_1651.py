@@ -14,7 +14,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AuthUser',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID',
+                 primary_key=True, serialize=False)),
                 ('last_login', models.DateTimeField(blank=True, null=True)),
                 ('is_superuser', models.IntegerField()),
                 ('username', models.CharField(max_length=30, unique=True)),

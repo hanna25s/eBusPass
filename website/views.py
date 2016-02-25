@@ -1,19 +1,15 @@
-#Timezone Libraries
+# Timezone Libraries
 import datetime
-import json
 import logging
 from datetime import timedelta
 
-#PayPal API
+# PayPal API
 import braintree
 import pytz
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from registration.backends.default.views import RegistrationView
-from registration.forms import RegistrationFormUniqueEmail
 
 from .forms import PurchaseForm
 from .models import AuthUser, Buspass, Name, NameForm, Transactions, UserForm
@@ -26,259 +22,287 @@ PER_RIDE_YOUTH_COST = 22.00
 
 logger = logging.getLogger(__name__)
 
-#Views
 
-
-def  RegistrationViewUniqueEmail(RegistrationView):
-    form_class = RegistrationFormUniqueEmail
 def index(request):
-	return render(request, 'website/landing_page.html')
+    return render(request, 'website/landing_page.html')
+
 
 @login_required
 def purchase_history(request):
-	bus_pass = get_pass(request.user)
-	history = Transactions.objects.filter(userid=request.user.id).order_by('-date')
-	context = {"purchase_history":history, "bus_pass":bus_pass}
-	return render(request, 'website/purchase_history.html', context)
+    bus_pass = get_pass(request.user)
+    history = Transactions.objects.filter(userid=request.user.id).\
+        order_by('-date')
+    context = {"purchase_history": history, "bus_pass": bus_pass}
+    return render(request, 'website/purchase_history.html', context)
+
 
 @login_required
-def purchase_complete(reques):
-	return render(request, 'website/purchase_complete.html')
+def purchase_complete(request):
+    return render(request, 'website/purchase_complete.html')
+
 
 @login_required
 def reg_name(request):
-	k=request.user.id
-	a = Name.objects.get(pk=k)
-	f = NameForm(request.POST,instance=a)
-	if f.is_valid():
-		f.save()
-		return render(request,'website/user_profile.html')
-	else:
-		form = NameForm(instance=a)
-		return render(request, 'website/reg_name.html', {'form':form})
+    k = request.user.id
+    a = Name.objects.get(pk=k)
+    f = NameForm(request.POST, instance=a)
+    if f.is_valid():
+        f.save()
+        return render(request, 'website/user_profile.html')
+    else:
+        form = NameForm(instance=a)
+        return render(request, 'website/reg_name.html', {'form': form})
+
 
 @login_required
 def account_info(request):
-	k=request.user.id
-	a = AuthUser.objects.get(pk=k)
-	f = UserForm(request.POST,instance=a)
-	if f.is_valid():
-		f.save()
-		return render(request,'website/user_profile.html')
-	else:
-		form = UserForm(instance=a)
-		return render(request, 'website/account_info.html', {'form':form})
+    k = request.user.id
+    a = AuthUser.objects.get(pk=k)
+    f = UserForm(request.POST, instance=a)
+    if f.is_valid():
+        f.save()
+        return render(request, 'website/user_profile.html')
+    else:
+        form = UserForm(instance=a)
+        return render(request, 'website/account_info.html', {'form': form})
+
 
 @login_required
 def purchase_pass(request):
-	error = ""
-	if request.method == "POST":
-		form = PurchaseForm(request.POST)
-		if not form.is_valid():
-			error = "Please complete all fields below"
-		else:
-			quantity = float(request.POST['quantity'])
+    error = ""
+    if request.method == "POST":
+        form = PurchaseForm(request.POST)
+        if not form.is_valid():
+            error = "Please complete all fields below"
+        else:
+            quantity = float(request.POST['quantity'])
 
-			if (quantity <= 0):
-				error = "Quantity must be greater than zero"
-			else:
-				pass_type = request.POST['pass_type']
-				nonce = request.POST['payment_method_nonce']
-				cost = 0
+            if (quantity <= 0):
+                error = "Quantity must be greater than zero"
+            else:
+                pass_type = request.POST['pass_type']
+                nonce = request.POST['payment_method_nonce']
+                cost = 0
 
-				if pass_type == "1":
-					cost = PER_RIDE_YOUTH_COST
-					pass_description = "Per Ride - Youth"
-				elif pass_type == "2":
-					cost = PER_RIDE_ADULT_COST
-					pass_description = "Per Ride - Adult"
-				elif pass_type == "3":
-					cost = MONTHLY_YOUTH_COST
-					pass_description = "Monthly - Youth"
-				elif pass_type == "4":
-					cost = MONTHLY_POST_SECONDARY_COST
-					pass_description = "Monthly - Post Secondary"
-				elif pass_type == "5":
-					cost = MONTHLY_ADULT_COST
-					pass_description = "Monthly - Adult"
+                if pass_type == "1":
+                    cost = PER_RIDE_YOUTH_COST
+                    pass_description = "Per Ride - Youth"
+                elif pass_type == "2":
+                    cost = PER_RIDE_ADULT_COST
+                    pass_description = "Per Ride - Adult"
+                elif pass_type == "3":
+                    cost = MONTHLY_YOUTH_COST
+                    pass_description = "Monthly - Youth"
+                elif pass_type == "4":
+                    cost = MONTHLY_POST_SECONDARY_COST
+                    pass_description = "Monthly - Post Secondary"
+                elif pass_type == "5":
+                    cost = MONTHLY_ADULT_COST
+                    pass_description = "Monthly - Adult"
 
-				amount = quantity * cost
-				user = AuthUser.objects.get(id=request.user.id)
+                amount = quantity * cost
+                user = AuthUser.objects.get(id=request.user.id)
 
-				result = braintree.Transaction.sale({
-		    		"amount": str(amount),
-		    		"payment_method_nonce": nonce,
-				    "options": {
-		        		"submit_for_settlement": True
-		    		}
-				})
+                result = braintree.Transaction.sale({
+                    "amount": str(amount),
+                    "payment_method_nonce": nonce,
+                    "options": {
+                        "submit_for_settlement": True
+                    }
+                })
 
-				if result.is_success:
-					try:
-						bus_pass = Buspass.objects.get(userid=user.id)
-					except Buspass.DoesNotExist:
-						bus_pass = Buspass()
-						bus_pass.userid = user
-						bus_pass.rides = 0
-						bus_pass.monthlypass = None
+                if result.is_success:
+                    try:
+                        bus_pass = Buspass.objects.get(userid=user.id)
+                    except Buspass.DoesNotExist:
+                        bus_pass = Buspass()
+                        bus_pass.userid = user
+                        bus_pass.rides = 0
+                        bus_pass.monthlypass = None
 
-					if (pass_type == "1" or pass_type == "2"):
-						bus_pass.rides += quantity * 10
-					elif (pass_type == "3" or pass_type == "4" or pass_type == "5"):
-						pass_time = quantity * 31
-						#Check to see if the pass is expired or valid. If valid, add to
-						#current expiry date. Otherwise, add one month starting today
-						if(bus_pass.monthlypass is None or bus_pass.monthlypass <= datetime.date.today()):
-							bus_pass.monthlypass = datetime.date.today() + timedelta(days=pass_time)
-						else:
-							bus_pass.monthlypass += timedelta(days=pass_time)
+                    if (pass_type == "1" or pass_type == "2"):
+                        bus_pass.rides += quantity * 10
+                    elif (pass_type == "3" or pass_type == "4" or
+                          pass_type == "5"):
+                        pass_time = quantity * 31
 
-					bus_pass.save()
+                        if(bus_pass.monthlypass is None or
+                           bus_pass.monthlypass <= datetime.date.today()):
+                            bus_pass.monthlypass = datetime.date.today() +\
+                              timedelta(days=pass_time)
+                        else:
+                            bus_pass.monthlypass += timedelta(days=pass_time)
 
-					transaction = Transactions()
-					transaction.userid = user
-					transaction.cost = amount
-					transaction.quantity = quantity
-					transaction.passtype = pass_description
-					transaction.save()
+                    bus_pass.save()
 
-					return render(request, 'website/purchase_complete.html')
-				else:
-					error = "Purchase Failed"
+                    transaction = Transactions()
+                    transaction.userid = user
+                    transaction.cost = amount
+                    transaction.quantity = quantity
+                    transaction.passtype = pass_description
+                    transaction.save()
 
-	token = braintree.ClientToken.generate()
-	form = PurchaseForm()
-	context = {"token":token, "form":form, "error":error}
-	return render(request, 'website/purchase_pass.html', context)
+                    return render(request, 'website/purchase_complete.html')
+                else:
+                    error = "Purchase Failed"
+
+    token = braintree.ClientToken.generate()
+    form = PurchaseForm()
+    context = {"token": token, "form": form, "error": error}
+    return render(request, 'website/purchase_pass.html', context)
+
 
 @login_required
 def signout(request):
-	return render(request, 'website/signout.html')
+    return render(request, 'website/signout.html')
+
 
 @login_required
 def confirmation(request):
-	return render(request, 'website/confirmation.html')
+    return render(request, 'website/confirmation.html')
+
 
 def registration(request):
-	return render(request, 'website/registration.html')
+    return render(request, 'website/registration.html')
+
 
 def signin(request):
-	return render(request, 'website/signin.html')
+    return render(request, 'website/signin.html')
+
 
 @login_required
 def user_profile(request):
-	return render(request, 'website/user_profile.html')
+    return render(request, 'website/user_profile.html')
 
-#RESTful Endpoints
+
+# RESTful Endpoints
 def generate_token(request):
-	if request.method == "GET":
-		return HttpResponse(braintree.ClientToken.generate())
+    if request.method == "GET":
+        return HttpResponse(braintree.ClientToken.generate())
+
 
 @csrf_exempt
 def process_nonce(request):
-	if request.method == "POST":
-		nonce = request.POST['nonce']
-		pass_type = request.POST['pass_type']
-		quantity = int(request.POST['quantity'])
-		amount = request.POST['amount']
-		user = get_user_from_request(request)
+    if request.method == "POST":
+        nonce = request.POST['nonce']
+        pass_type = request.POST['pass_type']
+        quantity = int(request.POST['quantity'])
+        amount = request.POST['amount']
+        user = get_user_from_request(request)
 
-		if user is None:
-			return HttpResponse("Invalid User")
+        if user is None:
+            return HttpResponse("Invalid User")
 
-		result = braintree.Transaction.sale({
-			"amount": str(amount),
-			"payment_method_nonce": nonce,
-			"options": {
-				"submit_for_settlement": True
-			}
-		})
+        result = braintree.Transaction.sale({
+            "amount": str(amount),
+            "payment_method_nonce": nonce,
+            "options": {
+                "submit_for_settlement": True
+            }
+        })
 
-		if result.is_success:
-			try:
-				bus_pass = Buspass.objects.get(userid=user.id)
-			except Buspass.DoesNotExist:
-				bus_pass = Buspass()
-				bus_pass.userid = user
-				bus_pass.rides = 0
-				bus_pass.monthlypass = None
+        if result.is_success:
+            try:
+                bus_pass = Buspass.objects.get(userid=user.id)
+            except Buspass.DoesNotExist:
+                bus_pass = Buspass()
+                bus_pass.userid = user
+                bus_pass.rides = 0
+                bus_pass.monthlypass = None
 
-			if (pass_type == "10 Rides - Adult" or pass_type == "10 Rides - Youth"):
-				bus_pass.rides += quantity * 10
-			elif (pass_type == "Monthly - Youth" or pass_type == "Monthly - Adult" or pass_type == "Monthly - Post Secondary"):
-				pass_time = quantity * 31
-				#Check to see if the pass is expired or valid. If valid, add to
-				#current expiry date. Otherwise, add one month starting today
-				if(bus_pass.monthlypass is None or bus_pass.monthlypass <= datetime.date.today()):
-					bus_pass.monthlypass = datetime.date.today() + timedelta(days=pass_time)
-				else:
-					bus_pass.monthlypass += timedelta(days=pass_time)
-			else:
-				return HttpResponse("Invalid pass type")
+            if (pass_type == "10 Rides - Adult" or
+                pass_type == "10 Rides - Youth"):
+                    bus_pass.rides += quantity * 10
+            elif (pass_type == "Monthly - Youth" or
+                  pass_type == "Monthly - Adult" or
+                  pass_type == "Monthly - Post Secondary"):
+                pass_time = quantity * 31
+            else:
+                return HttpResponse("Invalid pass type")
 
-			bus_pass.save()
+            if(bus_pass.monthlypass is None or
+               bus_pass.monthlypass <= datetime.date.today()):
 
-			transaction = Transactions()
-			transaction.userid = user
-			transaction.cost = amount
-			transaction.quantity = quantity
-			transaction.passtype = pass_type
-			transaction.save()
+                bus_pass.monthlypass = datetime.date.today() +\
+                 timedelta(days=pass_time)
+            else:
+                    bus_pass.monthlypass += timedelta(days=pass_time)
 
-			return HttpResponse("Success")
-		else:
-			return HttpResponse("Purchase Failed")
+            bus_pass.save()
+
+            transaction = Transactions()
+            transaction.userid = user
+            transaction.cost = amount
+            transaction.quantity = quantity
+            transaction.passtype = pass_type
+            transaction.save()
+
+            return HttpResponse("Success")
+        else:
+            return HttpResponse("Purchase Failed")
+
 
 @csrf_exempt
 def get_pass_information(request):
-	if request.method == "POST":
-		user = get_user_from_request(request)
-		if(user is None):
-			return HttpResponse("Invalid User")
+    if request.method == "POST":
+        user = get_user_from_request(request)
+        if(user is None):
+            return HttpResponse("Invalid User")
 
-		bus_pass = get_pass(user)
+        bus_pass = get_pass(user)
 
-		if(bus_pass is None):
-			return HttpResponse("No Pass")
+        if(bus_pass is None):
+            return HttpResponse("No Pass")
 
-		response = JsonResponse({'rides':str(bus_pass.rides) ,'monthly':str(bus_pass.monthlypass) })
-		return HttpResponse(response)
+        response = JsonResponse({'rides': str(bus_pass.rides),
+                                 'monthly': str(bus_pass.monthlypass)})
+        return HttpResponse(response)
 
 
 @csrf_exempt
 def ride_bus(request):
-	if request.method == "POST":
-		user = get_user_from_request(request)
-		if(user is None):
-			return HttpResponse("Invalid User")
+    if request.method == "POST":
+        user = get_user_from_request(request)
+        if(user is None):
+            return HttpResponse("Invalid User")
 
-		bus_pass = get_pass(user)
+        bus_pass = get_pass(user)
 
-		if(bus_pass is None):
-			return HttpResponse(JsonResponse({'isValid':False , 'message':"No Pass" }))
-		elif(bus_pass.monthlypass is not None and bus_pass.monthlypass >= datetime.date.today()):
-			return HttpResponse(JsonResponse({'isValid':True , 'passType':"Monthly" , 'message':str(bus_pass.monthlypass) }))
-		elif(bus_pass.rides > 0):
-			bus_pass.rides -= 1
-			bus_pass.save()
-			return HttpResponse(JsonResponse({'isValid':True , 'passType':"PerRide", 'message':str(bus_pass.rides)}))
-		else:
-			return HttpResponse(JsonResponse({'isValid':False , 'message':"Invalid Pass" }))
+        if(bus_pass is None):
+            return HttpResponse(JsonResponse({'isValid': False,
+                                              'message': "No Pass"}))
+        elif(bus_pass.monthlypass is not None and
+             bus_pass.monthlypass >= datetime.date.today()):
+            return HttpResponse(JsonResponse({'isValid': True,
+                                              'passType': "Monthly",
+                                              'message':
+                                              str(bus_pass.monthlypass)}))
+        elif(bus_pass.rides > 0):
+            bus_pass.rides -= 1
+            bus_pass.save()
+            return HttpResponse(JsonResponse({'isValid': True,
+                                              'passType': "PerRide",
+                                              'message': str(bus_pass.rides)}))
+        else:
+            return HttpResponse(JsonResponse({'isValid': False,
+                                              'message': "Invalid Pass"}))
 
 
-#Helper Methods
+# Helper Methods
 def get_pass(user):
-	try:
-		bus_pass = Buspass.objects.get(userid=user.id)
-		return bus_pass
-	except Buspass.DoesNotExist:
-		return None
+    try:
+        bus_pass = Buspass.objects.get(userid=user.id)
+        return bus_pass
+    except Buspass.DoesNotExist:
+        return None
+
 
 def get_user_from_request(request):
-	email = request.POST['email']
-	date_joined = datetime.datetime.strptime(request.POST['date_joined'], '%Y-%m-%d %H:%M:%S')
-	date_joined = date_joined.replace(tzinfo=pytz.UTC)
-	try:
-		return AuthUser.objects.get(email=email ,date_joined=date_joined)
-	except AuthUser.DoesNotExist:
-		return None
+    email = request.POST['email']
+    date_joined = datetime.datetime.strptime(request.POST['date_joined'],
+                                             '%Y-%m-%d %H:%M:%S')
+    date_joined = date_joined.replace(tzinfo=pytz.UTC)
+    try:
+        return AuthUser.objects.get(email=email, date_joined=date_joined)
+    except AuthUser.DoesNotExist:
+        return None

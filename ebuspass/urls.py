@@ -22,8 +22,9 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('website.urls')),
     url('^', include('django.contrib.auth.urls')),
-    #adding urls for registration
-    url(r'^accounts/register/$', RegistrationView.as_view(form_class=RegistrationFormUniqueEmail), name='registration_register'),
+    url(r'^accounts/register/$', RegistrationView.as_view(
+        form_class=RegistrationFormUniqueEmail),
+        name='registration_register'),
     url(r'^accounts/', include('registration.backends.default.urls')),
 
 ]
