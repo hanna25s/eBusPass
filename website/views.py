@@ -11,8 +11,8 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from .forms import PurchaseForm
-from .models import AuthUser, Buspass, Name, NameForm, Transactions, UserForm
+from .forms import  NameForm, PurchaseForm, UserForm
+from .models import AuthUser, Buspass, Name, Transactions
 
 MONTHLY_ADULT_COST = 84.00
 MONTHLY_POST_SECONDARY_COST = 72.00

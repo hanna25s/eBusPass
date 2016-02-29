@@ -11,3 +11,15 @@ PASS_TYPES = {
 class PurchaseForm(forms.Form):
     pass_type = forms.ChoiceField(choices=PASS_TYPES)
     quantity = forms.IntegerField()
+
+
+class NameForm(ModelForm):
+    class Meta:
+        model = Name
+        fields = ['first_name', 'last_name']
+
+
+class UserForm(ModelForm):
+    class Meta:
+        model = AuthUser
+        fields = ['first_name', 'last_name', 'email']

@@ -53,18 +53,6 @@ class Name(models.Model):
         db_table = 'auth_user'
 
 
-class NameForm(ModelForm):
-    class Meta:
-        model = Name
-        fields = ['first_name', 'last_name']
-
-
-class UserForm(ModelForm):
-    class Meta:
-        model = AuthUser
-        fields = ['first_name', 'last_name', 'email']
-
-
 class Transactions(models.Model):
     transactionid = models.AutoField(db_column='transactionId',
                                      primary_key=True)
