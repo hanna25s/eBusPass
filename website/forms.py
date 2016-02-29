@@ -1,4 +1,7 @@
 from django import forms
+from django.forms import ModelForm
+
+from .models import AuthUser, Name
 
 PASS_TYPES = {
             (1, "10 Rides Youth - $22.00"),
