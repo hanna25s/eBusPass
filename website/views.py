@@ -20,7 +20,7 @@ MONTHLY_YOUTH_COST = 60.00
 PER_RIDE_ADULT_COST = 27.00
 PER_RIDE_YOUTH_COST = 22.00
 
-SECURITY_KEY = "X>6o504Dk%0c3!D/w}Az"
+SECURITY_KEY = "6Qo504Dk3DwAz"
 
 logger = logging.getLogger(__name__)
 
