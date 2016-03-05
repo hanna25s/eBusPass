@@ -20,6 +20,8 @@ MONTHLY_YOUTH_COST = 60.00
 PER_RIDE_ADULT_COST = 27.00
 PER_RIDE_YOUTH_COST = 22.00
 
+SECURITY_KEY = "X>6o504Dk%0c3!D/w}Az"
+
 logger = logging.getLogger(__name__)
 
 
@@ -270,22 +272,26 @@ def ride_bus(request):
 
         if(bus_pass is None):
             return HttpResponse(JsonResponse({'isValid': False,
-                                              'message': "No Pass"}))
+                                              'message': "No Pass",
+                                              'key':SECURITY_KEY}))
         elif(bus_pass.monthlypass is not None and
              bus_pass.monthlypass >= datetime.date.today()):
             return HttpResponse(JsonResponse({'isValid': True,
                                               'passType': "Monthly",
                                               'message':
-                                              str(bus_pass.monthlypass)}))
+                                              str(bus_pass.monthlypass),
+                                              'key':SECURITY_KEY}))
         elif(bus_pass.rides > 0):
             bus_pass.rides -= 1
             bus_pass.save()
             return HttpResponse(JsonResponse({'isValid': True,
                                               'passType': "PerRide",
-                                              'message': str(bus_pass.rides)}))
+                                              'message': str(bus_pass.rides),
+                                              'key':SECURITY_KEY}))
         else:
             return HttpResponse(JsonResponse({'isValid': False,
-                                              'message': "Invalid Pass"}))
+                                              'message': "Invalid Pass",
+                                              'key':SECURITY_KEY}))
 
 
 # Helper Methods
