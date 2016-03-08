@@ -218,17 +218,15 @@ def process_nonce(request):
             elif (pass_type == "Monthly - Youth" or
                   pass_type == "Monthly - Adult" or
                   pass_type == "Monthly - Post Secondary"):
-                pass_time = quantity * 31
+                      pass_time = quantity * 31
+                      if(bus_pass.monthlypass is None or
+                         bus_pass.monthlypass <= datetime.date.today()):
+                          bus_pass.monthlypass = datetime.date.today() +\
+                           timedelta(days=pass_time)
+                      else:
+                              bus_pass.monthlypass += timedelta(days=pass_time)
             else:
                 return HttpResponse("Invalid pass type")
-
-            if(bus_pass.monthlypass is None or
-               bus_pass.monthlypass <= datetime.date.today()):
-
-                bus_pass.monthlypass = datetime.date.today() +\
-                 timedelta(days=pass_time)
-            else:
-                    bus_pass.monthlypass += timedelta(days=pass_time)
 
             bus_pass.save()
 
@@ -249,15 +247,20 @@ def get_pass_information(request):
     if request.method == "POST":
         user = get_user_from_request(request)
         if(user is None):
-            return HttpResponse("Invalid User")
+            response = JsonResponse({'error': "Invalid User",
+                                     'key':SECURITY_KEY})
+            return HttpResponse(response)
 
         bus_pass = get_pass(user)
 
         if(bus_pass is None):
-            return HttpResponse("No Pass")
+            response = JsonResponse({'error': "No Pass",
+                                     'key':SECURITY_KEY})
+            return HttpResponse(response)
 
         response = JsonResponse({'rides': str(bus_pass.rides),
-                                 'monthly': str(bus_pass.monthlypass)})
+                                 'monthly': str(bus_pass.monthlypass),
+                                 'key':SECURITY_KEY})
         return HttpResponse(response)
 
 
