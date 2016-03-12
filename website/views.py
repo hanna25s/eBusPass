@@ -184,6 +184,27 @@ def generate_token(request):
 
 
 @csrf_exempt
+def sync_pass(request):
+    if request.method == "POST":
+        user = get_user_from_request(request)
+        if(user is None):
+            response = JsonResponse({'error': "No User"})
+            return HttpResponse(response)
+
+        rides_taken = int(request.POST['rides_taken'])
+        bus_pass = get_pass(user)
+
+        bus_pass.rides -= rides_taken
+        bus_pass.save()
+
+        response = JsonResponse({'rides': str(bus_pass.rides),
+                                 'monthly': str(bus_pass.monthlypass),
+                                 'key': SECURITY_KEY,
+                                 'username': user.username})
+        return HttpResponse(response)
+
+
+@csrf_exempt
 def process_nonce(request):
     if request.method == "POST":
         nonce = request.POST['nonce']
