@@ -8,12 +8,14 @@ class Buspass(models.Model):
     buspassid = models.AutoField(db_column='busPassId', primary_key=True)
     userid = models.ForeignKey('AuthUser', db_column='userId',
                                blank=True, null=True)
-    monthlypass = models.DateTimeField(db_column='monthlyPass',
+    monthlypass = models.DateField(db_column='monthlyPass',
                                        blank=True, null=True)
     rides = models.IntegerField(blank=True, null=True)
 
+
     def __str__(self):
         return str(self.buspassid)
+
 
     class Meta:
         managed = False
@@ -34,7 +36,7 @@ class AuthUser(models.Model):
     date_joined = models.DateTimeField()
 
     def __str__(self):
-        return str(self.id) + ' - ' + self.username
+        return str(self.id) + ' - ' + str(self.username)
 
     class Meta:
         managed = False
