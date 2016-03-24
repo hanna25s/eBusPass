@@ -30,23 +30,18 @@ function init() {
 			//open commend window
 			infoWindow.open(map, marker);
 		},
-
 		function (error) {
 			//error
 			switch (error.code) {
 				case 1:
 				alert("Location service is denied.");
-				<img src='http://www.bajiroo.com/wp-content/uploads/2013/08/funny-fat-child-meme.jpg' style="width: 800px; height: 600px">
 				break;
-
 				case 2:
 				alert("cannot find out your location temporary");
 				break;
-
 				case 3:
 				alert("Get information Timeout");
 				break;
-
 				default:
 				alert("errors");
 				break;
