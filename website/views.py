@@ -63,7 +63,9 @@ def account_info(request):
     f = UserForm(request.POST, instance=a)
     if f.is_valid():
         f.save()
-        request.user = a
+        request.user.email = a.email
+        request.user.first_name = a.first_name
+        request.user.last_name = a.last_name
         return render(request, 'website/user_profile.html')
     else:
         form = UserForm(instance=a)
